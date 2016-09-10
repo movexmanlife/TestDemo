@@ -8,11 +8,9 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +20,7 @@ import android.widget.TextView;
 /**
  * 用来测试登录的界面中输入号码的动画，提示逐渐放大的效果
  */
-public class ScaleAnimatorActivity extends Activity implements View.OnClickListener{
+public class ScaleAnimatorActivityNew extends Activity implements View.OnClickListener{
     Button button;
     Button loginButton;
     EditText editText;
@@ -117,27 +115,6 @@ public class ScaleAnimatorActivity extends Activity implements View.OnClickListe
             @Override
             public void onAnimationEnd(Animator animation) {
                 login_toast_phone.setVisibility(View.VISIBLE);
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)phoneToastLayout.getLayoutParams();
-                lp.height = loginBtnHeight + PixelUtils.dip2px(getApplicationContext(), 50);
-                phoneToastLayout.setLayoutParams(lp);
-                phoneToastLayout.requestLayout();
-            }
-        });
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if ((float) animation.getAnimatedValue() >= 1) {
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)phoneToastLayout.getLayoutParams();
-                    lp.height = loginBtnHeight + PixelUtils.dip2px(getApplicationContext(), 50);
-                    phoneToastLayout.setLayoutParams(lp);
-                } else {
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)phoneToastLayout.getLayoutParams();
-                    int currentToastHeight = (int)((float) animation.getAnimatedValue() * PixelUtils.dip2px(getApplicationContext(), 50));
-                    login_toast_phone.setHeight(currentToastHeight);
-                    lp.height = loginBtnHeight + currentToastHeight;
-                    phoneToastLayout.setLayoutParams(lp);
-                }
-                phoneToastLayout.requestLayout();
             }
         });
         objectAnimator.start();
@@ -160,26 +137,6 @@ public class ScaleAnimatorActivity extends Activity implements View.OnClickListe
             public void onAnimationEnd(Animator animation) {
                 login_toast_phone.setVisibility(View.GONE);
                 login_toast_phone.setText(null);
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)phoneToastLayout.getLayoutParams();
-                lp.height = loginBtnHeight;
-                phoneToastLayout.setLayoutParams(lp);
-            }
-        });
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if ((float) animation.getAnimatedValue() >= 1) {
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)phoneToastLayout.getLayoutParams();
-                    lp.height = loginBtnHeight;
-                    phoneToastLayout.setLayoutParams(lp);
-                } else {
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)phoneToastLayout.getLayoutParams();
-                    int currentToastHeight =(int)((float) animation.getAnimatedValue() * PixelUtils.dip2px(getApplicationContext(), 50));
-                    login_toast_phone.setHeight(currentToastHeight);
-                    lp.height = loginBtnHeight + currentToastHeight;
-                    phoneToastLayout.setLayoutParams(lp);
-                }
-                phoneToastLayout.requestLayout();
             }
         });
         objectAnimator.start();

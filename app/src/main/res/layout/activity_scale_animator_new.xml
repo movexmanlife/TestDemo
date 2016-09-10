@@ -23,9 +23,8 @@
     <LinearLayout
         android:id="@+id/phoneToastLayout"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:background="@color/blue_gray"
-        android:layout_height="wrap_content">
+        android:layout_height="60dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/login_toast_phone"
@@ -36,14 +35,15 @@
             android:textColor="#77adf3"
             android:textSize="30dp"
             android:visibility="gone" />
-
-        <Button
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/loginBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="登录" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="登录" />
+
 
 </LinearLayout>
