@@ -23,21 +23,22 @@
     <LinearLayout
         android:id="@+id/phoneToastLayout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/login_toast_phone"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/phone_toast_height"
             android:background="@drawable/login_phone_number_toast_bg"
             android:gravity="center"
             android:textColor="#77adf3"
-            android:textSize="30dp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:textSize="@dimen/phone_toast_text_size"/>
     </LinearLayout>
 
     <Button
+        android:layout_marginTop="30dp"
         android:id="@+id/loginBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

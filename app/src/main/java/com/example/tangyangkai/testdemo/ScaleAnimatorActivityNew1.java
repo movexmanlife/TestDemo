@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -21,8 +20,10 @@ import android.widget.TextView;
 
 /**
  * 用来测试登录的界面中输入号码的动画，提示逐渐放大的效果
+ *
+ * 成功实现功能，但是这里的属性动画过多，需要进行精简一下。
  */
-public class ScaleAnimatorActivityNew extends Activity implements View.OnClickListener{
+public class ScaleAnimatorActivityNew1 extends Activity implements View.OnClickListener{
     Button button;
     Button loginButton;
     EditText editText;
@@ -72,11 +73,11 @@ public class ScaleAnimatorActivityNew extends Activity implements View.OnClickLi
     private void toggle(String content) {
         if (TextUtils.isEmpty(content)) {
             phoneToastCollapse();
-//            createDropAnimator(phoneToastLayout, PixelUtils.dip2px(getApplicationContext(), 60), 0);
+            createDropAnimator(phoneToastLayout, PixelUtils.dip2px(getApplicationContext(), 60), 0);
         } else {
             if (login_toast_phone.getVisibility() == View.GONE) {
                 phoneToastExpand(content, true);
-//                createDropAnimator(phoneToastLayout, 0, PixelUtils.dip2px(getApplicationContext(), 60));
+                createDropAnimator(phoneToastLayout, 0, PixelUtils.dip2px(getApplicationContext(), 60));
             } else {
                 phoneToastExpand(content, false);
             }
@@ -88,7 +89,7 @@ public class ScaleAnimatorActivityNew extends Activity implements View.OnClickLi
         if (v.getId() == R.id.btn) {
             if (login_toast_phone.getVisibility() == View.VISIBLE) {
                 phoneToastCollapse();
-//                createDropAnimator(phoneToastLayout, PixelUtils.dip2px(getApplicationContext(), 60), 0);
+                createDropAnimator(phoneToastLayout, PixelUtils.dip2px(getApplicationContext(), 60), 0);
             }
 
             if (!TextUtils.isEmpty(editText.getText().toString())) {
@@ -122,18 +123,6 @@ public class ScaleAnimatorActivityNew extends Activity implements View.OnClickLi
                 login_toast_phone.setVisibility(View.VISIBLE);
             }
         });
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                /**
-                 * TODO!!!特别注意一点就是这里的login_toast_phone.getScaleY()的变化范围为0~1之间
-                 */
-                float scaleYFactor = (float)animation.getAnimatedValue("scaleY");
-                ViewGroup.LayoutParams layoutParams = phoneToastLayout.getLayoutParams();
-                layoutParams.height = (int)(scaleYFactor * PixelUtils.dip2px(getApplicationContext(), 60));
-                phoneToastLayout.setLayoutParams(layoutParams);
-            }
-        });
         objectAnimator.start();
     }
 
@@ -156,29 +145,39 @@ public class ScaleAnimatorActivityNew extends Activity implements View.OnClickLi
                 login_toast_phone.setText(null);
             }
         });
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                /**
-                 * TODO!!!要注意一点就是这里如果使用login_toast_phone.getScaleY()来做的话，会导致最终的大小会小一点，
-                 * 原因其实很简单因为getScaleY()会滞后一点。
-                 */
-                /*ViewGroup.LayoutParams layoutParams = phoneToastLayout.getLayoutParams();
-                layoutParams.height = (int)(login_toast_phone.getScaleY() * PixelUtils.dip2px(getApplicationContext(), 60));
-                phoneToastLayout.setLayoutParams(layoutParams);*/
-                float scaleYFactor = (float)animation.getAnimatedValue("scaleY");
-                ViewGroup.LayoutParams layoutParams = phoneToastLayout.getLayoutParams();
-                layoutParams.height = (int)(scaleYFactor * PixelUtils.dip2px(getApplicationContext(), 60));
-                Log.e("xxxxxxxxxx", "------------------------------------>height:" + layoutParams.height);
-                phoneToastLayout.setLayoutParams(layoutParams);
-            }
-        });
+        /**
+         * 这段代码的含义就是，当时的思路是这样子的，login_toast_phone不断的缩放对吧，然后
+         * 那么login_toast_phone的高度也必然变小了，
+         *
+         *
+         * TODO!!!要非常注意这点
+         * TODO!!!特别注意这里login_toast_phone的值其实是不会改变的，变化的其实是login_toast_phone.getScaleY()等的值。
+         */
+//        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                int height = login_toast_phone.getHeight();
+//                Log.e("xxxxxxxxxx", "------------------------------------>height:" + height);
+//                phoneToastLayout.requestLayout();
+//            }
+//        });
         objectAnimator.start();
     }
 
-}
+    private void createDropAnimator(final View hiddenLayout, int start, int end) {
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+        animator.setDuration(300);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
-/**
- * TODO!!!这里还要注意一点就是当TextView中，文字显示不能居中，有可能的情况就是，TextView设置了大小，然后这个大小跟字体大小相比
- * TODO!!!要小一些，会导致不能居中的情况显示出来
- */
+            @Override
+            public void onAnimationUpdate(ValueAnimator arg0) {
+                int value = (int) arg0.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = hiddenLayout.getLayoutParams();
+                layoutParams.height = value;
+                hiddenLayout.setLayoutParams(layoutParams);
+            }
+        });
+        animator.start();
+    }
+}
